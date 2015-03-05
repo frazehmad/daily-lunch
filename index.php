@@ -23,7 +23,7 @@ $today_meal = findTodayMeal();
 		}
 		.meal {
 			font-family: sans-serif;
-			font-size: 4em;
+			font-size: 3em;
 			margin: 170px 0 0 150px;
 			width: 325px;
 			line-height: 1.1em;
