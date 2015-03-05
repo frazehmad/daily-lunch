@@ -21,7 +21,7 @@ function findTodayMeal()
 	{
 		if(!empty($meal['day']) AND $meal['day'] == $today)
 		{
-			return $meal;
+			return arrayToObject($meal);
 			break;
 		}
 	}
@@ -41,14 +41,9 @@ function findTodayMeal()
 	saveTodayMeal($today_meal);
 
 	// Convert array to object
-	$today_meal_object = new stdClass();
+	$today_meal = arrayToObject($today_meal);
 
-	foreach ($today_meal as $key => $value)
-	{
-	    $today_meal_object->$key = $value;
-	}
-
-	return $today_meal_object;
+	return $today_meal;
 }
 
 function isMealGeneratedToday()
@@ -104,4 +99,16 @@ function saveTodayMeal($today_meal)
 		fwrite($fileToWrite, json_encode($file_data));
 		fclose($fileToWrite);
 	}
+}
+
+function arrayToObject($array)
+{
+	$object = new stdClass();
+
+	foreach ($array as $key => $value)
+	{
+	    $object->$key = $value;
+	}
+
+	return $object;
 }
