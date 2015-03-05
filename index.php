@@ -13,10 +13,12 @@ $today_meal = findTodayMeal();
 	<title>Today Meal  - JEEGLO</title>
 	<style>
 		body {
+		    color: #ffffff;
 		    background-image:url("background.jpg");
 		    background-repeat: no-repeat;
-		    background-size: 100% 100%;
-		    color: #ffffff;
+		    background-size: cover;
+		    background-attachment: fixed;
+		    background-position: left;
 		}
 		html {
 		    height: 100%
@@ -32,6 +34,14 @@ $today_meal = findTodayMeal();
 		.meal strong {
 			color: #b8d750;
 			text-shadow: 2px 2px #000000;
+		}
+
+		@media only screen and (max-width: 1000px) {
+		   .meal { 
+		   	font-size: 1.8em; 
+		   	margin: 150px 0 0 100px;
+		   	width: 190px;
+		   }
 		}
 	</style>
 </head>
