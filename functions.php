@@ -13,7 +13,7 @@ function findTodayMeal()
 
 	if($today == "Saturday" OR $today == "Sunday")
 	{
-		return array('error' => TRUE, 'message' => 'Hey Buddy! go and enjoy weekend!');
+		return array('error' => TRUE, 'message' => '<strong>Hey Buddy!</strong> go and enjoy weekend!');
 	}
 
 	// If we have fixed meal for today
