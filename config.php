@@ -105,6 +105,16 @@ $meals = array(
 		'id' => 20,
 		'name' => 'Wow Deal',
 		'vendor' => 'Subway'
+	),
+	array(
+		'id' => 21,
+		'name' => 'Broast',
+		'vendor' => 'Pukar Foods'
+	),
+	array(
+		'id' => 22,
+		'name' => 'Club Sandwich',
+		'vendor' => 'Pukar Foods'
 	)
 );
 
