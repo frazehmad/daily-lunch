@@ -3,7 +3,9 @@
 include 'config.php';
 include 'functions.php';
 
-$today_meal = findTodayMeal();
+$pick_random = !empty($_GET['random']) ? TRUE : FALSE;
+
+$today_meal = $pick_random ? pickRandomMeal() : findTodayMeal();
 
 ?>
 

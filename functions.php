@@ -1,5 +1,19 @@
 <?php
 
+function pickRandomMeal()
+{
+	global $meals;
+
+	$random_key = array_rand($meals);
+
+	$today_meal = $meals[$random_key];
+
+	// Convert array to object
+	$today_meal = arrayToObject($today_meal);
+
+	return $today_meal;
+}
+
 function findTodayMeal()
 {
 	// Define Global variables
@@ -33,9 +47,7 @@ function findTodayMeal()
 	}
 
 	// Let's select a random meal that has not been repeated
-	$random_key = array_rand($meals);
-
-	$today_meal = $meals[$random_key];
+	$today_meal = getUniqueMeal();
 
 	// Save today meal into file
 	saveTodayMeal($today_meal);
@@ -48,7 +60,7 @@ function findTodayMeal()
 
 function isMealGeneratedToday()
 {
-	global $daily;
+	$daily = getDailyFileContent();
 
 	if(!empty($daily->last_generated))
 	{
@@ -70,23 +82,11 @@ function saveTodayMeal($today_meal)
 
 	if (file_exists($daily_file)) 
 	{
-		$this_month_meals = $daily->this_month_meals ? $daily->this_month_meals : array();
+		$this_month_meals = getThisMonthMeals();
 
 		$today_meal_id = $today_meal['id'];
 
-		$total_meals = count($meals);
-
-		if(count($this_month_meals) >= count($meals))
-		{
-			$this_month_meals = array($today_meal_id);
-		}
-		else
-		{
-			if(!in_array($today_meal_id, $this_month_meals))
-			{
-				$this_month_meals[] = $today_meal_id;
-			}
-		}
+		$this_month_meals[] = $today_meal_id;
 
 		$fileToWrite = fopen($daily_file, "w") or die("Unable to open file!");
 
@@ -99,6 +99,103 @@ function saveTodayMeal($today_meal)
 		fwrite($fileToWrite, json_encode($file_data));
 		fclose($fileToWrite);
 	}
+}
+
+function getUniqueMeal()
+{
+	global $daily_file;
+	global $daily;
+	global $meals;
+
+	$this_month_meals = getThisMonthMeals();
+
+	// Total Meals
+	$total_meals = count($meals);
+	$meals_checked = 0;
+
+	do 
+	{
+		// If we have checked all meals and not able to find a unique meal
+		if($meals_checked == $total_meals)
+		{
+			// Clean Daily JSON file
+			cleanDailyFile();
+
+			// Get this month meals again
+			$this_month_meals = getThisMonthMeals();
+		}
+
+		$random_key = array_rand($meals);
+
+		$today_meal = $meals[$random_key];
+		$today_meal_id = $today_meal['id'];
+
+		$unique = TRUE;
+
+		// If meals was already used this month
+	  	if(in_array($today_meal_id, $this_month_meals))
+		{
+			$unique = FALSE;
+		}
+
+		// If meal has a fixed day
+		if(!empty($today_meal['day']))
+		{
+			$unique = FALSE;
+		}
+
+	  	$meals_checked++;
+
+	} while (!$unique);
+
+	return $today_meal;
+}
+
+function cleanDailyFile()
+{
+	global $daily_file;
+
+	$file_data = array(
+		"last_generated" => strtotime('yesterday'),
+		"today_meal" => array('id'=> '', 'name' => '', 'vendor' => ''),
+		"this_month_meals" => array()
+	);
+
+	$fileToWrite = fopen($daily_file, "w") or die("Unable to open file!");
+
+	fwrite($fileToWrite, json_encode($file_data));
+	fclose($fileToWrite);
+}
+
+function getThisMonthMeals()
+{
+	if($daily = getDailyFileContent())
+	{
+		$this_month_meals = $daily->this_month_meals ? $daily->this_month_meals : array();
+		
+		return $this_month_meals;
+	}
+}
+
+function getDailyFileContent()
+{
+	global $daily_file;
+
+	$daily = NULL;
+
+	if (file_exists($daily_file)) 
+	{
+		$fh = fopen($daily_file, 'r');
+		while ($line = fgets($fh)) 
+		{
+		  $daily = $daily . $line;
+		}
+		fclose($fh);
+
+		$daily = json_decode($daily);
+	}
+
+	return $daily;
 }
 
 function arrayToObject($array)
