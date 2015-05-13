@@ -38,6 +38,10 @@ $today_meal = $pick_random ? pickRandomMeal() : findTodayMeal();
 			text-shadow: 2px 2px #000000;
 		}
 
+		.vendor {
+			font-size: 10px;
+		}
+
 		@media only screen and (max-width: 1000px) {
 		   .meal { 
 		   	font-size: 1.8em; 
@@ -53,6 +57,7 @@ $today_meal = $pick_random ? pickRandomMeal() : findTodayMeal();
 			<?php echo $today_meal['message']; ?>
 		<?php else: ?>
 			We are eating <strong><?php echo $today_meal->name; ?></strong> in today's lunch!
+			<p class="vendor">Vendor: <?php echo $today_meal->vendor; ?></p>
 		<?php endif; ?>
 	</div>
 </body>
